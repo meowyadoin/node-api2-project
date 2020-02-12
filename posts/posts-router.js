@@ -6,13 +6,13 @@ const db = require('../data/db.js');
 
 router.use(express.json());
 
-// Creates a post using the information sent thru req.body
+// Creates a post using the information sent through req.body
 router.post('/', (req, res) => {
-  const data = req.body;
-  if (!data.title || !data.contents) {
+  const newPost = req.body;
+  if (!newPost.title || !newPost.contents) {
     res.status(400).json({ errorMessage: 'Please provide title and contents for the post.'})
   } else {
-    db.insert(data)
+    db.insert(newPost)
     .then(post => {
       res.status(201).json(post)
     })
@@ -25,14 +25,13 @@ router.post('/', (req, res) => {
   }
 })
 
-// Creates a comment for the post with specified id using information sent thru req.body
+// Creates a comment for the post with specified id using information sent through req.body
 router.post('/:id/comments', (req, res) => {
-  // const id = req.params.id;
-  const data = req.body;
-  if (!data.text) {
+  const commentInfo = req.body;
+  if (!commentInfo.text) {
     res.status(400).json({ errorMessage: 'Please provide text for the comment.'})
   } else {
-    db.insertComment(data)
+    db.insertComment(commentInfo)
     .then(comment => {
       if (comment) {
         res.status(201).json(comment)
@@ -65,9 +64,9 @@ router.get('/', (req, res) => {
 
 // Returns the post object with the specified id.
 router.get('/:id', (req, res) => {
-  const id = req.params.id;
+  const postID = req.params.id;
 
-  db.findById(id)
+  db.findById(postID)
   .then(post => {
     if (post.length !== 0) {
       res.status(200).json(post)
@@ -85,9 +84,9 @@ router.get('/:id', (req, res) => {
 
 // Returns an array of all the comment objects associated with the post with the specified id.
 router.get('/:id/comments', (req, res) => {
-  const id = req.params.id;
+  const commentID = req.params.id;
 
-  db.findPostComments(id)
+  db.findPostComments(commentID)
   .then(comment => {
     if (comment.length !== 0) {
       res.status(200).json(comment)
@@ -105,9 +104,9 @@ router.get('/:id/comments', (req, res) => {
 
 // Removes the post with the specified id and returns the deleted post object.  
 router.delete('/:id', (req, res) => {
-  const id = req.params.id;
+  const deletedPost = req.params.id;
 
-  db.remove(id)
+  db.remove(deletedPost)
   .then(post => {
     if (post) {
       res.status(200).json(post)
@@ -123,17 +122,17 @@ router.delete('/:id', (req, res) => {
   })
 })
 
-// Updates the post with the specified ID using information sent thru req.body.
+// Updates the post with the specified ID using information sent through req.body.
 router.put('/:id', (req, res) => {
-  const id = req.params.id;
-  const data = req.body;
-  if (!data.title || !data.contents) {
+  const updates = req.params.id;
+  const info = req.body;
+  if (!info.title || !info.contents) {
     res.status(400).json({ errorMessage: 'Please provide title and contents for the post.'})
   } else {
-    db.update(id, data)
+    db.update(updates, info)
     .then(post => {
       if (post) {
-        res.status(200).json(data)
+        res.status(200).json(post)
       } else {
         res.status(404).json({ errorMessage: 'The post with the specified ID does not exist.'})
       }

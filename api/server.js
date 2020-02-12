@@ -7,7 +7,7 @@ const postsRouter = require('../posts/posts-router');
 server.use(express.json());
 
 server.get('/', (req, res) => {
-  res.send(`itssss working!`)
+  res.send(`itssss working - jess' tuesday project!`)
 })
 
 server.use('/api/posts', postsRouter)
